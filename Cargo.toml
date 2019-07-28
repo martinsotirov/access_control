@@ -1,9 +1,13 @@
 [package]
 name = "access_control"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Martin Sotirov <contact@martinsotirov.com>"]
 description = "A simple Role-Based Access Control system"
 license = "MIT/Apache-2.0"
 edition = "2018"
 
 [dependencies]
+regex = "1.2.0"
+
+[dev-dependencies]
+rocket = "0.4.2"

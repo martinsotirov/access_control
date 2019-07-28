@@ -1,3 +1,4 @@
+use regex::Regex;
 use crate::Action;
 use crate::Possession;
 
@@ -29,6 +30,12 @@ impl Right {
             possession,
             resource: resource.into()
         }
+    }
+
+    pub fn from_pattern<S: AsRef<str>>(pattern: S) -> Self {
+        let re = Regex::new(r"(\w+):(\w+)/(\w+)").unwrap();
+        let caps = re.captures(pattern.as_ref()).unwrap();
+        Right::new(&caps[1], &caps[2], &caps[3])
     }
 
     pub fn create_own<S: Into<String>>(resource: S) -> Self {
@@ -87,6 +94,14 @@ mod tests {
         assert_eq!(right.action, Action::Create);
         assert_eq!(right.possession, Possession::Own);
         assert_eq!(right.resource, String::from("post"));
+    }
+
+    #[test]
+    fn can_make_right_from_pattern() {
+        let right = Right::from_pattern("delete:own/profile");
+        assert_eq!(right.action, Action::Delete);
+        assert_eq!(right.possession, Possession::Own);
+        assert_eq!(right.resource, String::from("profile"));
     }
 
     #[test]

@@ -5,8 +5,7 @@ use crate::right::Right;
 
 #[derive(Debug)]
 pub struct Query {
-    roles: Vec<String>,
-    rights: Rights
+    roles: Vec<String>, rights: Rights
 }
 
 impl Query {
@@ -24,6 +23,10 @@ impl Query {
             }
         }
         false
+    }
+
+    pub fn execute_right(&self, right: Right) -> bool {
+        self.check(right.action, right.possession, right.resource)
     }
 
     pub fn access<S: Into<String>>(&self, action: S, possession: S, resource: S) -> bool {
@@ -112,6 +115,12 @@ mod tests {
     fn can_check_custom_access() {
         let query = init_query(Right::new("publish", "team", "news"));
         assert_eq!(query.access("publish", "team", "news"), true);
+    }
+
+    #[test]
+    fn can_check_custom_access_by_right() {
+        let query = init_query(Right::new("create", "any", "page"));
+        assert_eq!(query.execute_right(Right::create_any("page")), true);
     }
 
     #[test]
